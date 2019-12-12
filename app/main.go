@@ -78,5 +78,5 @@ func connect(user string, password string, host string) {
 		log.Printf("db connection failure - %s", err)
 		return
 	}
-	log.Printf("connected to db: %s", connection)
+	log.Printf("connected to db: %+v", connection)
 }
