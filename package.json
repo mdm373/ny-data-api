@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "install": "sh ./scripts/go-get-deps.sh",
+        "serve-dev": "sh ./scripts/go-run-app.sh",
+        "deploy": "sh ./scripts/host-update.sh",
+        "build": "sh ./scripts/go-build-app.sh"
+    }
+}

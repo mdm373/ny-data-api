@@ -16,3 +16,4 @@
 
 .temp/
 .secrets.json
+package-lock.json

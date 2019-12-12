@@ -1,4 +1,5 @@
 containerId=$(docker ps -q -a -f "name=ny-data-api")
+echo "restarting docker container"
 if [ -z "$containerId" ]
 then
       echo container not running
