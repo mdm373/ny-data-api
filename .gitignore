@@ -17,3 +17,5 @@
 .temp/
 .secrets.json
 package-lock.json
+.idea/
+.vscode/

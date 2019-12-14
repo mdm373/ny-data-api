@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/mdm373/ny-data-api/app/precinct"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/mdm373/ny-data-api/app/db"
-	"github.com/mdm373/ny-data-api/app/router"
 )
 
 type appParams struct {
@@ -22,8 +23,8 @@ type appParams struct {
 
 func main() {
 	params := parseParams()
-	connect(params.dbUser, params.dbPassword, params.dbHost)
-	serve(params.servePort, params.serveTimeout)
+	connection := connect(params.dbUser, params.dbPassword, params.dbHost)
+	serve(params.servePort, params.serveTimeout, connection)
 	log.Print("app ended")
 }
 
@@ -44,7 +45,7 @@ func parseParams() appParams {
 		os.Exit(0)
 	}
 	if *user == required || *host == required {
-		log.Printf("user and host are required params")
+		log.Printf("host and pass are required params")
 		os.Exit(0)
 	}
 	return appParams{
@@ -56,10 +57,10 @@ func parseParams() appParams {
 	}
 }
 
-func serve(port int, timeout int) {
+func serve(port int, timeout int, connection db.Connection) {
 	log.Printf("serving on port %d\n", port)
 	server := &http.Server{
-		Handler:      router.Get(),
+		Handler:      getRouter(connection),
 		ReadTimeout:  time.Duration(timeout) * time.Second,
 		WriteTimeout: time.Duration(timeout) * time.Second,
 		Addr:         fmt.Sprintf(":%d", port),
@@ -67,16 +68,23 @@ func serve(port int, timeout int) {
 
 	err := server.ListenAndServe()
 	if err != nil {
-		log.Printf("server exit - %s", err)
+		log.Printf("server exit - %+v", err)
 		return
 	}
 }
 
-func connect(user string, password string, host string) {
+func getRouter(connection db.Connection) *mux.Router {
+	root := mux.NewRouter()
+	precinct.AppendRoute(root, connection)
+	return root
+}
+
+func connect(user string, password string, host string) db.Connection {
 	connection, err := db.Get(user, password, host)
 	if err != nil {
-		log.Printf("db connection failure - %s", err)
-		return
+		log.Printf("db connection failure - %+v", err)
+		os.Exit(0)
 	}
 	log.Printf("connected to db: %+v", connection)
+	return connection
 }
