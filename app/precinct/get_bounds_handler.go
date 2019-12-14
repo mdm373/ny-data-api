@@ -11,18 +11,9 @@ import (
 	"github.com/mdm373/ny-data-api/app/router"
 )
 
-const idPathParam = "id"
-
-type precinct struct {
-	Sector     string `stbl:"sector" json:"sector"`
-	PrecinctId string `stbl:"pct" json:"precinctId"`
-	Geom       string `stbl:"the_geom" json:"geom"`
-	Phase      string `stbl:"phase" json:"phase"`
-}
-
 func wherePrecinctId(precinctId string) structable.WhereFunc {
 	return func(d structable.Describer, q squirrel.SelectBuilder) (squirrel.SelectBuilder, error) {
-		return q.Where(db.FieldEq(precinct{}, "PrecinctId", precinctId)).Limit(10), nil
+		return q.Where(db.FieldEq(emptyPrecinct, "PrecinctId", precinctId)).Limit(10), nil
 	}
 }
 
@@ -35,7 +26,7 @@ func mapRows(rows []structable.Recorder) []precinct {
 }
 
 func newGetBoundsHandler(connection db.Connection) router.RouteHandler {
-	recorder := connection.Bind(tableName, new(precinct))
+	recorder := connection.Bind(tableName, emptyPrecinct)
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		if precinctId, ok := vars[idPathParam]; ok {
