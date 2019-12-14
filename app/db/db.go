@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Masterminds/squirrel"
+	"github.com/Masterminds/structable"
 
 	_ "github.com/lib/pq" //postgres driver needed for sql connection
 	"github.com/pkg/errors"
@@ -11,6 +13,14 @@ import (
 //Connection stateful connection to our db
 type Connection struct {
 	db *sql.DB
+}
+
+func (c *Connection) RunQuery(builder squirrel.SelectBuilder) (*sql.Rows, error) {
+	return builder.PlaceholderFormat(squirrel.Dollar).RunWith(c.db).Query()
+}
+
+func (c *Connection) Bind(tableName string, schema structable.Record) structable.Recorder {
+	return structable.New(squirrel.NewStmtCacheProxy(c.db), "postgres").Bind(tableName, schema)
 }
 
 var EmptyConnection = Connection{}
