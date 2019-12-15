@@ -3,6 +3,12 @@
 
 See [ingest](https://github.com/mdm373/ny-data-ingest) for data source details and [web](https://github.com/mdm373/ny-data-web) for the pretty front end.
 
+## Tooling
+* `mux` for general routing
+* `squirrel` / `structable` for SQL querying / structuring
+*  postgres driver via `pq`
+* `npm` for easy script running
+
 ## Install
 ```
 npm run install
@@ -24,7 +30,7 @@ create configuration `./.secrets.json` file in the following format
 ## Requirements
 * development
   * go (~ 1.13.x)
-  * node/npm (easy script running)
+  * npm
   * jq
 * deployment
   * docker
