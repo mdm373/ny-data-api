@@ -28,9 +28,6 @@ func mapRows(rows []structable.Recorder) []precinct {
 func newGetBoundsHandler(connection db.Connection) router.RouteHandler {
 	recorder := connection.Bind(tableName, emptyPrecinct)
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodOptions {
-			return
-		}
 		vars := mux.Vars(r)
 		if precinctId, ok := vars[idPathParam]; ok {
 			rows, err := structable.ListWhere(recorder, wherePrecinctId(precinctId))
