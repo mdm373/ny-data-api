@@ -9,5 +9,7 @@ import (
 
 func AppendRoute(parent *mux.Router, connection db.Connection) {
 	precinctByIDRouter := parent.PathPrefix(fmt.Sprintf("/precinct/{%s}", idPathParam)).Subrouter()
-	router.AppendOptionedGetRoute(precinctByIDRouter, "/bounds", newGetBoundsHandler(connection))
+	router.AppendOptionedGetRoute(precinctByIDRouter, "/bounds/", newGetPrecinctBoundsHandler(connection))
+	router.AppendOptionedGetRoute(parent, "/precinct/", newGetPrecinctsHandler(connection))
+	router.AppendOptionedGetRoute(parent, "/precinct/bounds/", newGetAllPrecinctBoundsHandler(connection))
 }

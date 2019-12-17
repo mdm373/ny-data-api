@@ -1,15 +1,20 @@
 package precinct
 
 const (
-	tableName   = "NYPD_SECTORS"
+	tableName   = "nypd_precinct_bounds"
 	idPathParam = "id"
 )
 
-var emptyPrecinct = precinct{}
+var emptyPrecinctBounds = precinctBounds{}
+
+type precinctBounds struct {
+	Id       int    `stbl:"id" json:"id"`
+	Precinct string `stbl:"precinct" json:"precinct"`
+	Bounds   string `stbl:"bounds" json:"bounds"`
+}
 
 type precinct struct {
-	Sector     string `stbl:"sector" json:"sector"`
-	PrecinctId string `stbl:"pct" json:"precinctId"`
-	Geom       string `stbl:"the_geom" json:"geom"`
-	Phase      string `stbl:"phase" json:"phase"`
+	Precinct string `stbl:precinct json: precinct`
 }
+
+var emptyPrecinct = precinct{}

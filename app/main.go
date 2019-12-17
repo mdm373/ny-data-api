@@ -74,7 +74,7 @@ func serve(port int, timeout int, connection db.Connection) {
 }
 
 func getRouter(connection db.Connection) *mux.Router {
-	root := mux.NewRouter()
+	root := mux.NewRouter().StrictSlash(true)
 	precinct.AppendRoute(root, connection)
 	root.Use(mux.CORSMethodMiddleware(root))
 	root.Use(func(next http.Handler) http.Handler {
