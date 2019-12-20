@@ -1,0 +1,15 @@
+{
+  "bounds": [{
+    "tableName": "nypd_precinct_bounds",
+    "route": "nypd-precincts"
+  },{
+    "tableName": "nypd_sector_bounds",
+    "route": "nypd-sectors"
+  },{
+    "tableName": "community_district_bounds",
+    "route": "community-districts"
+  },{
+    "tableName": "school_district_bounds",
+    "route": "school-districts"
+  }]
+}

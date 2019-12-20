@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/mdm373/ny-data-api/app/precinct"
+	"github.com/mdm373/ny-data-api/app/bounds"
 	"log"
 	"net/http"
 	"os"
@@ -59,23 +59,33 @@ func parseParams() appParams {
 
 func serve(port int, timeout int, connection db.Connection) {
 	log.Printf("serving on port %d\n", port)
+	handler, err := getRouter(connection)
+	if err != nil {
+		if err != nil {
+			log.Printf("server start fail - %+v", err)
+			return
+		}
+	}
 	server := &http.Server{
-		Handler:      getRouter(connection),
+		Handler:      handler,
 		ReadTimeout:  time.Duration(timeout) * time.Second,
 		WriteTimeout: time.Duration(timeout) * time.Second,
 		Addr:         fmt.Sprintf(":%d", port),
 	}
 
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		log.Printf("server exit - %+v", err)
 		return
 	}
 }
 
-func getRouter(connection db.Connection) *mux.Router {
+func getRouter(connection db.Connection) (*mux.Router, error) {
 	root := mux.NewRouter().StrictSlash(true)
-	precinct.AppendRoute(root, connection)
+	err := bounds.AppendRoute(root, connection)
+	if err != nil {
+		return nil, err
+	}
 	root.Use(mux.CORSMethodMiddleware(root))
 	root.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +93,7 @@ func getRouter(connection db.Connection) *mux.Router {
 			next.ServeHTTP(w, r)
 		})
 	})
-	return root
+	return root, nil
 }
 
 func connect(user string, password string, host string) db.Connection {
