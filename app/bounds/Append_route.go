@@ -12,7 +12,9 @@ func AppendRoute(parent *mux.Router, connection db.Connection) error {
 	if err != nil {
 		return err
 	}
-	boundsRouter := parent.PathPrefix(fmt.Sprintf("/bounds/{%s}", idPathParam)).Subrouter()
-	router.AppendOptionedGetRoute(boundsRouter, "/", newGetBoundsHandler(boundConfig, connection))
+	boundsRouter := parent.PathPrefix("/bounds").Subrouter()
+	pathRoute := fmt.Sprintf("/paths/{%s}", idPathParam)
+	router.AppendOptionedGetRoute(boundsRouter, pathRoute, newGetBoundsHandler(boundConfig, connection))
+	router.AppendOptionedGetRoute(boundsRouter, "/types", newGetBoundTypesHandler(boundConfig))
 	return nil
 }

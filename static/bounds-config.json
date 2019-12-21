@@ -1,15 +1,19 @@
 {
   "bounds": [{
     "tableName": "nypd_precinct_bounds",
-    "route": "nypd-precincts"
+    "route": "nypd-precincts",
+    "displayName": "NYPD Precincts"
   },{
     "tableName": "nypd_sector_bounds",
-    "route": "nypd-sectors"
+    "route": "nypd-sectors",
+    "displayName": "NYPD Sectors"
   },{
     "tableName": "community_district_bounds",
-    "route": "community-districts"
+    "route": "community-districts",
+    "displayName": "Community Districts"
   },{
     "tableName": "school_district_bounds",
-    "route": "school-districts"
+    "route": "school-districts",
+    "displayName": "School Districts"
   }]
 }

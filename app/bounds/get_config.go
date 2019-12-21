@@ -8,8 +8,9 @@ import (
 )
 
 type BoundConfig struct {
-	TableName string `json:"tableName"`
-	Route     string `json:"route"`
+	TableName   string `json:"tableName"`
+	Route       string `json:"route"`
+	DisplayName string `json:displayName`
 }
 
 type BoundsConfig struct {
