@@ -6,20 +6,20 @@ import (
 	"github.com/mdm373/ny-data-api/app/router"
 )
 
-type BoundTypeRow struct {
+type safeBoundType struct {
 	TypeName    string `json:"typeName"`
 	DisplayName string `json:"displayName"`
 }
 
-func newGetBoundTypesHandler(config []BoundConfig) router.RouteHandler {
-	var boundTypes []BoundTypeRow
-	for _, configItem := range config {
-		boundTypes = append(boundTypes, BoundTypeRow{
-			TypeName:    configItem.Route,
-			DisplayName: configItem.DisplayName,
-		})
-	}
+func newGetBoundTypesHandler(boundTypes []BoundTypeRow) router.RouteHandler {
 	return func(w http.ResponseWriter, r *http.Request) {
-		router.RespondWithJSON(w, boundTypes)
+		var safeTypes []safeBoundType
+		for _, item := range boundTypes {
+			safeTypes = append(safeTypes, safeBoundType{
+				TypeName:    item.TypeName,
+				DisplayName: item.DisplayName,
+			})
+		}
+		router.RespondWithJSON(w, safeTypes)
 	}
 }

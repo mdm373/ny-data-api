@@ -1,41 +1,29 @@
 package bounds
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
-	"os"
+	"github.com/Masterminds/structable"
+	"github.com/mdm373/ny-data-api/app/db"
 )
 
-type BoundConfig struct {
-	TableName   string `json:"tableName"`
-	Route       string `json:"route"`
-	DisplayName string `json:displayName`
+func mapBoundTypeRows(rows []structable.Recorder) []BoundTypeRow {
+	values := make([]BoundTypeRow, len(rows))
+	for i, item := range rows {
+		values[i] = *item.Interface().(*BoundTypeRow)
+	}
+	return values
 }
 
-type BoundsConfig struct {
-	Bounds []BoundConfig `json:"bounds"`
+type BoundTypeRow struct {
+	TypeName    string `json:"typeName" stbl:"type_name"`
+	DisplayName string `json:"displayName" stbl:"display_name"`
+	TableName   string `stbl:"table_name"`
 }
 
-var GetConfig = func() ([]BoundConfig, error) {
-	jsonFile, err := os.Open("./static/bounds-config.json")
-	defer func() {
-		err := jsonFile.Close()
-		if err != nil {
-			log.Printf("error closing config: %+v", err)
-		}
-	}()
+var GetConfig = func(connection db.Connection) ([]BoundTypeRow, error) {
+	recorder := connection.Bind("bounds_types", BoundTypeRow{})
+	boundTypes, err := structable.List(recorder, 1000, 0)
 	if err != nil {
 		return nil, err
 	}
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	var config BoundsConfig
-	err = json.Unmarshal(byteValue, &config)
-	if err != nil {
-		return nil, err
-	}
-	return config.Bounds, nil
+	return mapBoundTypeRows(boundTypes), nil
 }

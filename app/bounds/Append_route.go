@@ -8,13 +8,13 @@ import (
 )
 
 func AppendRoute(parent *mux.Router, connection db.Connection) error {
-	boundConfig, err := GetConfig()
+	boundConfig, err := GetConfig(connection)
 	if err != nil {
 		return err
 	}
 	boundsRouter := parent.PathPrefix("/bounds").Subrouter()
-	pathRoute := fmt.Sprintf("/paths/{%s}", idPathParam)
+	pathRoute := fmt.Sprintf("/paths/{%s}/", idPathParam)
 	router.AppendOptionedGetRoute(boundsRouter, pathRoute, newGetBoundsHandler(boundConfig, connection))
-	router.AppendOptionedGetRoute(boundsRouter, "/types", newGetBoundTypesHandler(boundConfig))
+	router.AppendOptionedGetRoute(boundsRouter, "/types/", newGetBoundTypesHandler(boundConfig))
 	return nil
 }

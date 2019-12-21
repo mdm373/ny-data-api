@@ -19,14 +19,14 @@ func mapRows(rows []structable.Recorder) []boundsRecord {
 }
 
 type boundsRoute struct {
-	config   BoundConfig
+	config   BoundTypeRow
 	recorder structable.Recorder
 }
 
-func newGetBoundsHandler(config []BoundConfig, connection db.Connection) router.RouteHandler {
+func newGetBoundsHandler(config []BoundTypeRow, connection db.Connection) router.RouteHandler {
 	mapConfig := make(map[string]boundsRoute)
 	for _, configItem := range config {
-		mapConfig[configItem.Route] = boundsRoute{
+		mapConfig[configItem.TypeName] = boundsRoute{
 			config:   configItem,
 			recorder: connection.Bind(configItem.TableName, boundsRecord{}),
 		}
