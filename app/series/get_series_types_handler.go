@@ -11,6 +11,8 @@ type seriesType struct {
 	DisplayName string `json:"displayName"`
 	ValueName   string `json:"valueName"`
 	BoundType   string `json:"boundType"`
+	Oldest      string `json:"oldest"`
+	Newest      string `json:"newest"`
 }
 
 func getSeriesTypesHandler(boundTypes []seriesTypeRow) router.RouteHandler {
@@ -22,6 +24,8 @@ func getSeriesTypesHandler(boundTypes []seriesTypeRow) router.RouteHandler {
 				DisplayName: item.DisplayName,
 				ValueName:   item.ValueName,
 				BoundType:   item.BoundType,
+				Oldest:      item.Oldest,
+				Newest:      item.Newest,
 			})
 		}
 		router.RespondWithJSON(w, safeTypes)

@@ -19,6 +19,8 @@ type seriesTypeRow struct {
 	TableName   string `stbl:"table_name"`
 	BoundType   string `stbl:"bound_type"`
 	ValueName   string `stbl:"value_name"`
+	Oldest      string `stbl:"oldest"`
+	Newest      string `stbl:"newest"`
 }
 
 var getConfig = func(connection db.Connection) ([]seriesTypeRow, error) {
