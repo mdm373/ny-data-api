@@ -14,8 +14,8 @@ func mapBoundTypeRows(rows []structable.Recorder) []BoundTypeRow {
 }
 
 type BoundTypeRow struct {
-	TypeName    string `json:"typeName" stbl:"type_name"`
-	DisplayName string `json:"displayName" stbl:"display_name"`
+	TypeName    string `stbl:"type_name"`
+	DisplayName string `stbl:"display_name"`
 	TableName   string `stbl:"table_name"`
 }
 

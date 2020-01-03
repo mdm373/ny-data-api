@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/mdm373/ny-data-api/app/bounds"
+	"github.com/mdm373/ny-data-api/app/series"
 	"log"
 	"net/http"
 	"os"
@@ -83,6 +84,10 @@ func serve(port int, timeout int, connection db.Connection) {
 func getRouter(connection db.Connection) (*mux.Router, error) {
 	root := mux.NewRouter().StrictSlash(true)
 	err := bounds.AppendRoute(root, connection)
+	if err != nil {
+		return nil, err
+	}
+	err = series.AppendRoute(root, connection)
 	if err != nil {
 		return nil, err
 	}
