@@ -22,20 +22,28 @@ create configuration `./.secrets.json` file in the following format
         "LOCAL" : {
             "HOST" : "host of posstgres db when running locally",
             "PASS" : "password for the same"
+            "SERVE_HOST": "externally visible host (xyz.abc.com) when served",
+            "SCHEME": "externally visible scheme (https or http) when served"
         },
         "HOSTED" : "same format as local but for values to use when running in hosted env"
     }
 }
 ```
-## Requirements
-* development
+
+## Development Pre-Requisits
   * go (~ 1.13.x)
   * npm
-  * jq
-* deployment
   * docker
   * docker-cli
+## Requirements (installed during npm install)
+  * jq
+  * go-swagger
+  * gettext (envsubst)
 
 ## Scripts
 * `npm run serve-dev` - run a dev server
 * `npm run deploy` - update docker, restart/update remote docker host
+
+## Swagger
+
+visit `/swagger-ui/` or `/` once serving for swagger generated api documentation

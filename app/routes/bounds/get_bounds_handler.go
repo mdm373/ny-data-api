@@ -10,12 +10,24 @@ import (
 	"github.com/mdm373/ny-data-api/app/router"
 )
 
-func mapRows(rows []structable.Recorder) []boundsRecord {
-	values := make([]boundsRecord, len(rows))
+type boundsRecord struct {
+	Id       int    `stbl:"id"`
+	BoundId  string `stbl:"bound_id"`
+	Bounds   string `stbl:"bounds"`
+	Centroid string `stbl:"centroid"`
+}
+
+func mapRecords(rows []structable.Recorder) []boundsModel {
+	models := make([]boundsModel, len(rows))
 	for i, item := range rows {
-		values[i] = *item.Interface().(*boundsRecord)
+		record := *item.Interface().(*boundsRecord)
+		models[i] = boundsModel{
+			BoundId:  record.BoundId,
+			Bounds:   record.Bounds,
+			Centroid: record.Centroid,
+		}
 	}
-	return values
+	return models
 }
 
 type boundsRoute struct {
@@ -33,7 +45,7 @@ func newGetBoundsHandler(config []BoundTypeRow, connection db.Connection) router
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		boundsType, ok := vars[idPathParam]
+		boundsType, ok := vars[boundsParamsDef.TypeName]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -45,10 +57,10 @@ func newGetBoundsHandler(config []BoundTypeRow, connection db.Connection) router
 		}
 		rows, err := structable.List(boundsTypeRoute.recorder, 1000, 0)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("db error: %+v", err), http.StatusInternalServerError)
+			router.RespondWithError(w, fmt.Sprintf("db error: %+v", err))
 			return
 		}
-		values := mapRows(rows)
-		router.RespondWithJSON(w, values)
+		models := mapRecords(rows)
+		router.RespondWithJSON(w, boundsModelList{Items: models})
 	}
 }

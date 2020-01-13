@@ -1,8 +1,12 @@
 {
+    "version": "0.0.1",
     "scripts": {
-        "install": "sh ./scripts/go-get-deps.sh",
+        "install": "sh ./scripts/go-get-deps.sh && sh ./scripts/install-dev.sh",
         "serve-dev": "sh ./scripts/go-run-app.sh",
         "deploy": "sh ./scripts/host-update.sh",
-        "build": "sh ./scripts/go-build-app.sh"
+        "build": "sh ./scripts/swagger-generate.sh --local && sh ./scripts/go-build-app.sh"
+    },
+    "devDependencies": {
+        "swagger-ui-dist": "^3.24.3"
     }
 }
