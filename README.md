@@ -7,7 +7,7 @@ See [ingest](https://github.com/mdm373/ny-data-ingest) for data source details a
 * `mux` for general routing
 * `squirrel` / `structable` for SQL querying / structuring
 *  postgres driver via `pq`
-* `npm` for easy script running
+* `npm` for easy script running / versioning
 * `swagger` for api documentation
 
 ## Install
