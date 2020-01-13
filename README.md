@@ -8,6 +8,7 @@ See [ingest](https://github.com/mdm373/ny-data-ingest) for data source details a
 * `squirrel` / `structable` for SQL querying / structuring
 *  postgres driver via `pq`
 * `npm` for easy script running
+* `swagger` for api documentation
 
 ## Install
 ```
