@@ -9,6 +9,7 @@ import (
 //swagger:model error
 type errorModel struct {
 	//Tell the user what went terribly wrong
+	//required: true
 	Message string `json:"message"`
 }
 
