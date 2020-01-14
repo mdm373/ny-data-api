@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/mdm373/ny-data-api/app/db"
@@ -40,24 +41,33 @@ var granularityParamMap = map[string]granularity{
 	"year":  granularityYear,
 }
 
-func getTimeBound(r *http.Request, param string) (time.Time, error) {
+func getTimeStringFromRaw(val string) string {
+	if strings.Index(val, "T") < 0 {
+		return fmt.Sprintf("%sT00:00:00Z", val)
+	}
+	return val
+}
+func getTimeParamOrDefault(r *http.Request, param string, defaultTime string) (time.Time, error) {
 	val, ok := r.URL.Query()[param]
-	asTime := time.Date(100, 0, 0, 0, 0, 0, 0, time.UTC)
-	var err error
 	if ok {
-		asTime, err = time.Parse(time.RFC3339, fmt.Sprintf("%sT00:00:00Z", val[0]))
-		if err != nil {
-			return time.Now(), errors.Wrap(err, fmt.Sprintf("failed to parse %s time", param))
-		}
+		return time.Parse(time.RFC3339, getTimeStringFromRaw(val[0]))
+	} else {
+		return time.Parse(time.RFC3339, getTimeStringFromRaw(defaultTime))
+	}
+}
+func getTimeBound(r *http.Request, param string, defaultTime string) (time.Time, error) {
+	asTime, err := getTimeParamOrDefault(r, param, defaultTime)
+	if err != nil {
+		return time.Now(), errors.Wrap(err, fmt.Sprintf("failed to parse %s time", param))
 	}
 	return asTime, nil
 }
-func getWhereFunc(r *http.Request) (structable.WhereFunc, error) {
-	startTime, err := getTimeBound(r, "start")
+func getWhereFunc(r *http.Request, aType seriesTypeRow) (structable.WhereFunc, error) {
+	startTime, err := getTimeBound(r, pathParamsDef.Start, aType.Oldest)
 	if err != nil {
 		return nil, err
 	}
-	endTime, err := getTimeBound(r, "end")
+	endTime, err := getTimeBound(r, pathParamsDef.End, aType.Newest)
 	if err != nil {
 		return nil, err
 	}
@@ -83,37 +93,37 @@ func getSeriesQueryHandler(config []seriesTypeRow, connection db.Connection) rou
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		boundsType, ok := vars[idPathParam]
+		seriesType, ok := vars[pathParamsDef.SeriesType]
 		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+			router.RespondWithError(w, "missing series type")
 			return
 		}
-		granularityParam, ok := vars[granularityPathParam]
+		granularityParam, ok := vars[pathParamsDef.Granularity]
 		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+			router.RespondWithError(w, "missing granularity")
 			return
 		}
 		granularityValue, ok := granularityParamMap[granularityParam]
 		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+			router.RespondWithError(w, "invalid granularity")
 			return
 		}
-		seriesTypeRoute, ok := mapConfig[boundsType]
+		seriesTypeRoute, ok := mapConfig[seriesType]
 		if !ok {
-			w.WriteHeader(http.StatusNotFound)
+			router.RespondWithError(w, "invalid series type")
 			return
 		}
-		whereFunc, err := getWhereFunc(r)
+		whereFunc, err := getWhereFunc(r, seriesTypeRoute.config)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("query error: %+v", err), http.StatusInternalServerError)
+			router.RespondWithError(w, fmt.Sprintf("query error: %+v", err))
 			return
 		}
 		rows, err := structable.ListWhere(seriesTypeRoute.recorders[granularityValue], whereFunc)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("db error: %+v", err), http.StatusInternalServerError)
+			router.RespondWithError(w, fmt.Sprintf("db error: %+v", err))
 			return
 		}
 		values := mapRows(rows)
-		router.RespondWithJSON(w, values)
+		router.RespondWithJSON(w, seriesRecordList{Items: values})
 	}
 }

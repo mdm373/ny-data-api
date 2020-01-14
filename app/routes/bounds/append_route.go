@@ -8,14 +8,14 @@ import (
 )
 
 // swagger:parameters listBoundsPaths
-type paramsBounds struct {
+type pathParams struct {
 	// name of the bounds type
 	// in: path
 	// required: true
 	TypeName string `json:"type-name"`
 }
 
-var boundsParamsDef = paramsBounds{
+var boundsParamsDef = pathParams{
 	TypeName: "type-name",
 }
 
@@ -34,7 +34,7 @@ func AppendRoute(parent *mux.Router, connection db.Connection) error {
 	//       500: error
 	router.AppendOptionedGetRoute(boundsRouter, pathRoute, newGetBoundsHandler(boundConfig, connection))
 
-	// swagger:route GET /bounds/types bounds listBoundsTypes
+	// swagger:route GET /bounds/types/ bounds listBoundsTypes
 	// gets all available bounds data types
 	// Responses:
 	//       200: boundTypeList

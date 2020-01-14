@@ -6,13 +6,28 @@ import (
 	"github.com/mdm373/ny-data-api/app/router"
 )
 
+//Time series record set type definition
+//swagger:model
 type seriesType struct {
-	TypeName    string `json:"typeName"`
+	//the series type name
+	TypeName string `json:"typeName"`
+	//human readable, pretty name of the type
 	DisplayName string `json:"displayName"`
-	ValueName   string `json:"valueName"`
-	BoundType   string `json:"boundType"`
-	Oldest      string `json:"oldest"`
-	Newest      string `json:"newest"`
+	// human readable, pretty name of the statistical value for this series
+	ValueName string `json:"valueName"`
+	// bound type that this series data relates to
+	BoundType string `json:"boundType"`
+	// least recent time on record for this time series
+	Oldest string `json:"oldest"`
+	// most recent time available for this time series
+	Newest string `json:"newest"`
+}
+
+//List of series types
+//swagger:model
+type seriesTypeList struct {
+	//items in this list
+	Items []seriesType
 }
 
 func getSeriesTypesHandler(boundTypes []seriesTypeRow) router.RouteHandler {
@@ -28,6 +43,6 @@ func getSeriesTypesHandler(boundTypes []seriesTypeRow) router.RouteHandler {
 				Newest:      item.Newest,
 			})
 		}
-		router.RespondWithJSON(w, safeTypes)
+		router.RespondWithJSON(w, seriesTypeList{Items: safeTypes})
 	}
 }
