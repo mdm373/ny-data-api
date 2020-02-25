@@ -47,12 +47,12 @@ func newGetBoundsHandler(config []BoundTypeRow, connection db.Connection) router
 		vars := mux.Vars(r)
 		boundsType, ok := vars[boundsParamsDef.TypeName]
 		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+			router.RespondWithBadRequest(w, boundsParamsDef.TypeName)
 			return
 		}
 		boundsTypeRoute, ok := mapConfig[boundsType]
 		if !ok {
-			w.WriteHeader(http.StatusNotFound)
+			router.RespondWithNotFound(w, boundsType)
 			return
 		}
 		rows, err := structable.List(boundsTypeRoute.recorder, 1000, 0)

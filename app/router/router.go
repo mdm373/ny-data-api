@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -23,6 +24,18 @@ func RespondWithJSON(responseWriter http.ResponseWriter, body interface{}) {
 func RespondWithError(responseWriter http.ResponseWriter, body string) {
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	model := errorModel{Message: body}
+	responseWriter.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(responseWriter).Encode(model)
+}
+func RespondWithNotFound(responseWriter http.ResponseWriter, identifier string) {
+	responseWriter.WriteHeader(http.StatusNotFound)
+	model := errorModel{Message: fmt.Sprintf("unknown identifier '%s'", identifier)}
+	responseWriter.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(responseWriter).Encode(model)
+}
+func RespondWithBadRequest(responseWriter http.ResponseWriter, identifier string) {
+	responseWriter.WriteHeader(http.StatusBadRequest)
+	model := errorModel{Message: fmt.Sprintf("missing identifier '%s'", identifier)}
 	responseWriter.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(responseWriter).Encode(model)
 }

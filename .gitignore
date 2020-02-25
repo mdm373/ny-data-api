@@ -15,7 +15,8 @@
 # vendor/
 
 .temp/
-.secrets.json
+.env
+.env.docker
 package-lock.json
 .idea/
 .vscode/

@@ -7,29 +7,15 @@ See [ingest](https://github.com/mdm373/ny-data-ingest) for data source details a
 * `mux` for general routing
 * `squirrel` / `structable` for SQL querying / structuring
 *  postgres driver via `pq`
-* `npm` for easy script running / versioning
+* `npm` for easy script running, env loading / versioning
 * `swagger` for api documentation
 
 ## Install
 ```
 npm run install
 ```
-create configuration `./.secrets.json` file in the following format
-```
-{
-    "DOCKER_HOST" : "hostname to ssh into for remote hosted docker updates",
-    "DOCKER_USER" : "name of user for docker image pull / push",
-    "CONFIG" : {
-        "LOCAL" : {
-            "HOST" : "host of posstgres db when running locally",
-            "PASS" : "password for the same"
-            "SERVE_HOST": "externally visible host (xyz.abc.com) when served",
-            "SCHEME": "externally visible scheme (https or http) when served"
-        },
-        "HOSTED" : "same format as local but for values to use when running in hosted env"
-    }
-}
-```
+* populate `.env` for local server instance config
+* populate `.env.docker` for hosted server instance config
 
 ## Development Pre-Requisits
   * go (~ 1.13.x)

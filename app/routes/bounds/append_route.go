@@ -30,15 +30,17 @@ func AppendRoute(parent *mux.Router, connection db.Connection) error {
 	// swagger:route GET /bounds/paths/{type-name}/  bounds listBoundsPaths
 	// get all paths for a given bounds type
 	// Responses:
-	//       200: boundsList
-	//       500: error
+	// 		200: boundsList
+	//		500: error
+	//		404: error
+	//		400: error
 	router.AppendOptionedGetRoute(boundsRouter, pathRoute, newGetBoundsHandler(boundConfig, connection))
 
 	// swagger:route GET /bounds/types/ bounds listBoundsTypes
 	// gets all available bounds data types
 	// Responses:
-	//       200: boundTypeList
-	//       500: error
+	//	200: boundTypeList
+	//	500: error
 	router.AppendOptionedGetRoute(boundsRouter, "/types/", newGetBoundTypesHandler(boundConfig))
 	return nil
 }

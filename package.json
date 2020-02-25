@@ -1,12 +1,13 @@
 {
     "version": "0.0.1",
     "scripts": {
-        "install": "sh ./scripts/go-get-deps.sh && sh ./scripts/install-dev.sh",
-        "serve-dev": "sh ./scripts/go-run-app.sh",
-        "deploy": "sh ./scripts/host-update.sh",
+        "install": "scripts/install.sh",
+        "serve-dev": "dotenv -- sh scripts/serve-dev.sh",
+        "deploy": "dotenv -e .env.docker -- sh scripts/deploy.sh",
         "build": "sh ./scripts/swagger-generate.sh --local && sh ./scripts/go-build-app.sh"
     },
     "devDependencies": {
+        "dotenv-cli": "^3.1.0",
         "swagger-ui-dist": "^3.24.3"
     }
 }

@@ -5,7 +5,7 @@ package bounds
 type boundsModel struct {
 	//bounded it this bounds belongs to
 	//required: true
-	BoundId string `json:"bound_id"`
+	BoundId string `json:"boundId"`
 	//base64 encoded version of the bounds polyline
 	//required: true
 	Bounds string `json:"bounds"`
