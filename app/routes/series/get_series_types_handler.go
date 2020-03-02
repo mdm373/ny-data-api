@@ -34,7 +34,7 @@ type seriesType struct {
 type seriesTypeList struct {
 	//items in this list
 	//required: true
-	Items []seriesType
+	Items []seriesType `json:"items"`
 }
 
 func getSeriesTypesHandler(boundTypes []seriesTypeRow) router.RouteHandler {
